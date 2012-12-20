@@ -1,0 +1,565 @@
+初学者学习 R 语言的文档（教材）阅读顺序可以参考如下： 
+R for Beginners --> simpleR / Using R --> An Introduction to R 
+
+#PLOT()及相关函数的参数说明
+for (i in c("p", "l", "b", "c", "o", "h", "s", "S","n")) {plot(c(1:5, 5:1), type = i, main = paste("Plot type: \"",i, "\"", sep = ""), xlab = "")}
+
+ 
+ #直方图
+par(mfrow = c(2, 2), mar = c(2, 3, 2, 0.5), mgp = c(2,0.5, 0))
+data(geyser, package = "MASS")
+hist(geyser$waiting, main = "(1) freq = TRUE", xlab = "waiting")
+hist(geyser$waiting, freq = FALSE, xlab = "waiting",
+main = "(2) freq = FALSE")
+hist(geyser$waiting, breaks = 5, density = 10, xlab = "waiting",
+main = "(3) breaks = 5")
+hist(geyser$waiting, breaks = 40, col = "red", xlab = "waiting",
+ main = "(4) breaks = 40")
+ 
+#箱线图 
+par(mar = c(2, 2.5, 0.2, 0.1))
+boxplot(count ~ spray, data = InsectSprays, col = "lightgray",
+horizontal = TRUE, pch = 4)
+
+
+#条形图 用分类调色板
+library(RColorBrewer)
+par(mfrow = c(2, 1), mar = c(3, 2.5, 0.5, 0.1))
+death = t(VADeaths)[, 5:1]
+barplot(death, col = brewer.pal(4, "Set1"))
+barplot(death, col = brewer.pal(4, "Set1"), beside = TRUE,
+legend = TRUE)
+
+时间序列图
+data(AirPassengers)
+x<-AirPassengers
+plot(x)
+
+链接数据库
+library(RODBC)
+channel<-odbcConnect("ORACLETEST",uid="recommendation",pwd="recommendation")
+sqlTables(channel)
+sqlQuery(channel,"select logdate,alipay from scene_alipay_test2")
+c=sqlQuery(channel,"select logdate,alipay from scene_alipay_test2")
+plot(c)
+
+箱型图
+c2=sqlQuery(channel,"select view_count from scene_effect1")                                              
+boxplot(c2)                       
+
+
+plot(cars$dist~cars$speed,#y~x，cars是R自带的数据
+main="Relationship between car distance & speed",#标题
+xlab = "Speed(miles per hour)",#x轴标题
+ylab = "Distance travelled (miles)",#Y轴标题
+xlim = c(0,30),#设置x轴的取值区间为0到30
+ylim = c(0,140),#设置y轴的取值区间为0到140
+xaxs = "i",#这里是设置x轴的风格，暂时没看明白有多大区别
+yaxs = "i",
+col = "red",#设置颜色
+pch = 19)#pch指代点的形状，用数字表示，可查看帮助文档   
+
+
+plot(c,#y~x，cars是R自带的数据
+main="alipay",#标题
+xlab = "日期",#x轴标题
+ylab = "alipay 金额",#Y轴标题
+xlim = c(0,1),#设置x轴的取值区间为0到30
+ylim = c(2012/07/30,2012/08/23),#设置y轴的取值区间为0到140
+xaxs = "i",#这里是设置x轴的风格，暂时没看明白有多大区别
+yaxs = "i",
+col = "red",#设置颜色
+pch = 19)#pch指代点的形状，用数字表示，可查看帮助文档         
+
+png(filename="折线图.png")
+rain <- read.csv("D:/2012-08-29-11-25.csv",header=TRUE)
+plot(rain$Tokyo,type='l',col="red",
+     ylim=c(0,300),
+     main="Monthly Rainfall in major cities",
+     xlab="Month of Year",
+     ylab="Rainfall(mm)",
+     lwd=2)
+lines(rain$NewYork,type="l",col="blue",lwd=2)#前面有plot，这里lines函数可以直接在同一幅图里面绘制
+lines(rain$London,type="l",col="green",lwd=2)
+lines(rain$Berlin,type="l",col="orange",lwd=2)
+legend("topright",legend=c("Tokyo","NewYork","London","Berlin"),#第一个参数是图例的h位置，第二个是图例名称，第三个是图例代表的颜色
+       col = c("red","blue","green","orange"),
+       lty=1,lwd=2)#lwde甚至线的宽度，lty设置图例的宽度
+dev.off()             
+
+
+c2=sqlQuery(channel,"select alipay from scene_alipay_test2")
+boxplot(c2,xlab="Detail浏览还浏览",ylab=" 7天移动平均值",xlim = c(0.8,5),main="2012/7/31-2012/8/30 场景点击率箱形图");
+boxplot(c2,ylab="Detail浏览还浏览",xlab=" 7天移动平均值",ylim = c(0,30),main="2012/7/31-2012/8/30 场景点击率箱形图",horizontal = TRUE);
+
+boxplot(c2,xlab="7天移动平均值",ylim = c(0.8,12.5),main="2012/7/31~2012/8/30 场景点击率箱形图",horizontal = TRUE,log = "y", col = "bisque");
+boxplot(c2,xlab="7天移动平均值",main="2012/7/31~2012/8/30 场景点击率箱形图",horizontal = TRUE,log = "x", col = "bisque");
+par(las=1,mai=c(1,4,1,1))
+boxplot(c2,main="各重要场景箱形图",ylim = c(0.5,30),horizontal = TRUE,log = "x", col = "bisque",cex.axis=0.8);
+text(fivenum(c2, na.rm = TRUE))
+
+boxplot(c2,xlab="7天移动平均值",main="2012/7/31~2012/8/30 场景点击率箱形图",horizontal = TRUE,boxwex=1,log = "x", col = "bisque",cex.axis=0.8);
+
+多个比较的boxplot图
+ a=c(1,2,3,4,5,2,1,2,4,2,5,6)
+ b=c("A","A","B","B","C","C","C","C","D","D","D","D")
+ c=c(1,2,3,4,5,5,2,1,2,4,2,5,6,5,6)
+ d=c("A","A","A","A","B","B","B","C","C","C","C","C","D","D","D")
+ boxplot(a~b,boxwex=.24,at=1:4-.2,col="orange",axes=F) # 定义箱式图的宽度
+ box();axis(2)
+ axis(1,at=c(1:4-.2,1:4+.2),rep(c("\u2640","\u2642"),each=4))
+ boxplot(c~d,boxwex=.24,at=1:4+.2,col="yellow",add=T,axes=F) # add
+ 
+ 
+ 
+
+c(c3[2][2,1])
+
+----不带时间序列的异常点显示
+library(RODBC)
+channel<-odbcConnect("ORACLETEST",uid="recommendation",pwd="recommendation")
+s1=sqlQuery(channel,"
+select 
+     sum(decode(scene_id, '15002393553af9e490d1', round(100*open_count/view_count,2))) 收藏宝贝弹出层,
+     sum(decode(scene_id, '1500450424ad8e3cab1c', round(100*open_count/view_count,2))) 加入购物车弹出层,
+     sum(decode(scene_id, '15002393568e3909bfff', round(100*open_count/view_count,2))) 店铺收藏弹出层,
+     sum(decode(scene_id, '1500241427fc751f7fe4', round(100*open_count/view_count,2))) 已买到宝贝,
+     sum(decode(scene_id, '1500072688f691927a1e', round(100*open_count/view_count,2))) Detail浏览还浏览,
+     sum(decode(scene_id, '1500570899d2ea3c3517', round(100*open_count/view_count,2))) 旺旺右侧推荐宝贝,
+     sum(decode(scene_id, '150012108882a30a058e', round(100*open_count/view_count,2))) 购物车猜你喜欢,
+     sum(decode(scene_id, '1501003501d6a6d9accb', round(100*open_count/view_count,2)))  聚划算List页面推荐,
+     sum(decode(scene_id, '1501003500122560ec9e', round(100*open_count/view_count,2))) 聚划算详情页面推荐,
+     sum(decode(scene_id, '1501006679081ec6ed6f', round(100*open_count/view_count,2)))  \"试用商品推荐-旺旺tab页面\",
+     sum(decode(scene_id, '15010103060ddc147cae', round(100*open_count/view_count,2)))  \"detail下架页面推荐-冷悦\"
+from scene_effect
+where logdate between add_months(sysdate - 1, -1) and sysdate - 1
+GROUP BY logdate
+ORDER BY logdate");
+
+par(las=1,mai=c(1,2.5,1,1))
+boxplot(s1,main="各重要场景最近一个月箱形图",horizontal = TRUE,log = "x", col = "bisque",cex.axis=0.7);
+
+s2=sqlQuery(channel,"
+select logdate 日期,
+     sum(decode(scene_id, '15002393553af9e490d1', round(100*open_count/view_count,2))) 收藏宝贝弹出层,
+     sum(decode(scene_id, '1500450424ad8e3cab1c', round(100*open_count/view_count,2))) 加入购物车弹出层,
+     sum(decode(scene_id, '15002393568e3909bfff', round(100*open_count/view_count,2))) 店铺收藏弹出层,
+     sum(decode(scene_id, '1500241427fc751f7fe4', round(100*open_count/view_count,2))) 已买到宝贝,
+     sum(decode(scene_id, '1500072688f691927a1e', round(100*open_count/view_count,2))) Detail浏览还浏览,
+     sum(decode(scene_id, '1500570899d2ea3c3517', round(100*open_count/view_count,2))) 旺旺右侧推荐宝贝,
+     sum(decode(scene_id, '150012108882a30a058e', round(100*open_count/view_count,2))) 购物车猜你喜欢,
+     sum(decode(scene_id, '1501003501d6a6d9accb', round(100*open_count/view_count,2)))  聚划算List页面推荐,
+     sum(decode(scene_id, '1501003500122560ec9e', round(100*open_count/view_count,2))) 聚划算详情页面推荐,
+     sum(decode(scene_id, '1501006679081ec6ed6f', round(100*open_count/view_count,2)))  \"试用商品推荐-旺旺tab页面\",
+     sum(decode(scene_id, '15010103060ddc147cae', round(100*open_count/view_count,2)))  \"detail下架页面推荐-冷悦\"
+from scene_effect
+where logdate between add_months(sysdate - 1, -1) and sysdate - 1
+GROUP BY logdate
+ORDER BY logdate");
+
+for(m in 1:length(names(s2))){
+  if (m==1){
+     next;
+  }
+  scene_list<-s2[,m];
+  five_value <- fivenum(scene_list, na.rm = TRUE);
+  Q1_value <- five_value[2];
+  Q3_value <- five_value[4];
+        
+  section <- (Q3_value - Q1_value)*1.5;
+        
+  lower_value <- (Q1_value - section);
+  up_value    <- (Q3_value + section);
+  
+  j<-0;
+  for(k in 1:length(scene_list)){
+     id_value<-scene_list[k];
+     if(id_value <= lower_value){
+         j<-j+1;
+     }else if(id_value >= up_value){
+         j<-j+1;
+     }
+  }
+  
+  if(j>0){
+    cat(names(s2)[m],": ");
+    cat("Q1:",Q1_value," ","Q3:",Q3_value," ");
+    cat("异常点:");
+    for(n in 1:length(scene_list)){
+       id_value<-scene_list[n];
+       if(id_value <= lower_value){
+           cat(format(s2[n,1],"%b%d"),"[",id_value,"]"," ");
+       }else if(id_value >= up_value){
+           cat(format(s2[n,1],"%b%d"),"[",id_value,"]"," ");
+       }
+    }
+    cat("\n");
+  }
+}
+
+
+datos <- source("http://ubuntuone.com/42j1RqUmNmxUuCppW4gElX")[[1]]
+library(reshape2)
+library(ggplot2)
+
+datos$PRECIP[is.na(datos$PRECIP)] <- 0
+dm <- melt(datos,id="FECHA.H_SOLAR")
+# change FECHA.H_SOLAR to POSIXct so you get your dates right
+dm$Fecha <- as.POSIXct(dm$FECHA.H_SOLAR, "%y/%m/%d %H:%M:%S", tz = "")
+qplot(Fecha, value, data = dm, geom = "line", group = variable) +
+  facet_grid(variable ~ ., scale = "free_y")
+  
+  
+datos <- source("http://ubuntuone.com/42j1RqUmNmxUuCppW4gElX")[[1]]
+library(reshape2)
+library(ggplot2)
+
+sv <- melt(s3,id="LOGDATE")
+# change FECHA.H_SOLAR to POSIXct so you get your dates right
+sv$LOGDATE <- as.POSIXct(sv$LOGDATE, "%y/%m/%d", tz = "")
+qplot(LOGDATE, value, data = sv, geom = "line", group = variable) +
+  facet_grid(variable ~ ., scale = "free_y")
+
+
+先安装两个工具：R-2.15.1 和 RStudio
+
+R语言基础入门
+http://www.cnblogs.com/wentingtu/archive/2012/03/03/2377969.html
+
+R语言开发利器——RStudio
+http://blog.sina.com.cn/s/blog_5f234d4701016eij.html
+
+R语言读取外部数据文件
+http://blog.sina.com.cn/s/blog_5f234d4701016lfj.html
+
+从Java里调用R – 使用Rserve
+http://shao-fan.com/blog/use-rserve-in-java.html
+
+    RService rService = new RService();
+		try {
+			//测试R是否联通
+			RConnection c = new RConnection();
+		  REXP x = c.eval("R.version.string");
+		  System.out.println(x.asString());
+			RConnection re = rService.startTransaction(); //开始独占工作空间
+			//生成测试数据
+			List<Double> massList = new ArrayList<Double>();
+			for(int i=0;i<10;i++){
+				massList.add(RandomUtils.nextDouble());
+			}
+			//注意这个地方的转换,主要是re.assign入参决定的
+			double[] masses = new double[massList.size()];
+      int i = 0;
+      for (Double d : massList) {
+      	masses[i] = d;
+          i++;
+      }
+			REXP massesRexp = new REXPDouble(masses);	
+			//double[][] xx = new double[][]{{1,2},{3,4,5}}; //生成两个二维数组
+			//double[][] yy = new double[][]{{6,7},{8,9,10}};
+			//http://compomics-sigpep.googlecode.com/svn-history/r82/trunk/sigpep-app/src/main/java/com/compomics/sigpep/analysis/impl/KernelBasedChargeProbabilityCalculator.java
+	    // re.assign("x", xx.toString()); //给R的变量赋值
+	    // re.assign("y", yy.toString());
+			re.assign("masses", massesRexp);
+	    File tempFile = File.createTempFile("test-", ".jpg"); //把图像生成到文件
+	    String filePath = tempFile.getAbsolutePath();
+	    re.eval("jpeg('" + StringEscapeUtils.escapeJava(filePath) + "')");
+	    //re.eval("qqplot(x,y)"); //绘图
+	    //re.eval("plot(c(masses))");
+	    re.eval("boxplot(masses)");
+	    re.eval("dev.off()");
+		} catch (RserveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (REXPMismatchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+		   // logger.warn("Failed to create temp file", e);
+		} finally {
+		    rService.endTransaction(); //退出时一定要关闭此工作空间
+		}
+
+如何让R语言读写SQL的数据
+http://hellocgc.iteye.com/blog/1456650
+
+R语言Linux环境安装说明
+http://tiantiangeq.iteye.com/blog/1524101
+
+--链接数据库，加载需要处理的数据
+library(RODBC)
+channel<-odbcConnect("ORACLETEST",uid="recommendation",pwd="recommendation")
+s1=sqlQuery(channel,"
+select 
+     sum(decode(scene_id, '15002393553af9e490d1', round(100*open_count/view_count,2))) 收藏宝贝弹出层,
+     sum(decode(scene_id, '1500450424ad8e3cab1c', round(100*open_count/view_count,2))) 加入购物车弹出层,
+     sum(decode(scene_id, '15002393568e3909bfff', round(100*open_count/view_count,2))) 店铺收藏弹出层,
+     sum(decode(scene_id, '1500241427fc751f7fe4', round(100*open_count/view_count,2))) 已买到宝贝,
+     sum(decode(scene_id, '1500072688f691927a1e', round(100*open_count/view_count,2))) Detail浏览还浏览,
+     sum(decode(scene_id, '1500570899d2ea3c3517', round(100*open_count/view_count,2))) 旺旺右侧推荐宝贝,
+     sum(decode(scene_id, '150012108882a30a058e', round(100*open_count/view_count,2))) 购物车猜你喜欢,
+     sum(decode(scene_id, '1501003501d6a6d9accb', round(100*open_count/view_count,2)))  聚划算List页面推荐,
+     sum(decode(scene_id, '1501003500122560ec9e', round(100*open_count/view_count,2))) 聚划算详情页面推荐,
+     sum(decode(scene_id, '1501006679081ec6ed6f', round(100*open_count/view_count,2)))  \"试用商品推荐-旺旺tab页面\",
+     sum(decode(scene_id, '15010103060ddc147cae', round(100*open_count/view_count,2)))  \"detail下架页面推荐-冷悦\"
+from scene_effect
+where logdate between add_months(sysdate - 1, -1) and sysdate - 1
+GROUP BY logdate
+ORDER BY logdate");
+
+--生成箱形图
+par(las=1,mai=c(1,2.5,1,1))
+boxplot(s1,main="各重要场景点击率最近一个月箱形图",horizontal = TRUE,log = "x", col = "bisque",cex.axis=0.7);
+
+--生成文字辅助信息箱形图
+s2=sqlQuery(channel,"
+select logdate 日期,
+     sum(decode(scene_id, '15002393553af9e490d1', round(100*open_count/view_count,2))) 收藏宝贝弹出层,
+     sum(decode(scene_id, '1500450424ad8e3cab1c', round(100*open_count/view_count,2))) 加入购物车弹出层,
+     sum(decode(scene_id, '15002393568e3909bfff', round(100*open_count/view_count,2))) 店铺收藏弹出层,
+     sum(decode(scene_id, '1500241427fc751f7fe4', round(100*open_count/view_count,2))) 已买到宝贝,
+     sum(decode(scene_id, '1500072688f691927a1e', round(100*open_count/view_count,2))) Detail浏览还浏览,
+     sum(decode(scene_id, '1500570899d2ea3c3517', round(100*open_count/view_count,2))) 旺旺右侧推荐宝贝,
+     sum(decode(scene_id, '150012108882a30a058e', round(100*open_count/view_count,2))) 购物车猜你喜欢,
+     sum(decode(scene_id, '1501003501d6a6d9accb', round(100*open_count/view_count,2)))  聚划算List页面推荐,
+     sum(decode(scene_id, '1501003500122560ec9e', round(100*open_count/view_count,2))) 聚划算详情页面推荐,
+     sum(decode(scene_id, '1501006679081ec6ed6f', round(100*open_count/view_count,2)))  \"试用商品推荐-旺旺tab页面\",
+     sum(decode(scene_id, '15010103060ddc147cae', round(100*open_count/view_count,2)))  \"detail下架页面推荐-冷悦\"
+from scene_effect
+where logdate between add_months(sysdate - 1, -1) and sysdate - 1
+GROUP BY logdate
+ORDER BY logdate");
+
+boxplot(s2,main="各重要场景点击率最近一个月箱形图",horizontal = TRUE,log = "x", col = "bisque",cex.axis=0.7);
+for(m in 1:length(names(s2))){
+  if (m==1){
+     next;
+  }
+  scene_list<-s2[,m];
+  --根据五数概括分析出异常点数据
+  five_value <- fivenum(scene_list, na.rm = TRUE);
+  Q1_value <- five_value[2];
+  Q3_value <- five_value[4];
+
+  section <- (Q3_value - Q1_value)*1.5;
+  
+  lower_value <- (Q1_value - section);
+  up_value    <- (Q3_value + section);
+  
+  j<-0;
+  for(k in 1:length(scene_list)){
+     id_value<-scene_list[k];
+     if(id_value <= lower_value){
+         j<-j+1;
+     }else if(id_value >= up_value){
+         j<-j+1;
+     }
+  }
+  
+  if(j>0){
+    cat(names(s2)[m],": ");
+    cat("Q1:",Q1_value," ","Q3:",Q3_value," ");
+    cat("异常点:");
+    len_lower<-1;
+    
+    max_value<-max(scene_list);
+    if(max_value<=2.5){
+       max_skip<-0.3;
+    }else if(max_value<=8){
+       max_skip<-1.5;
+    }else if(max_value<=14){
+       max_skip<-5;
+    }else if(max_value<=40){
+       max_skip<-10;
+    }
+
+    min_value<-min(scene_list);
+    if(min_value<=0.8){
+       min_skip<-0.18;
+    }else if(min_value<=2){
+       min_skip<-0.25;
+    }else if(min_value<=5){
+       min_skip<-1.2;
+    }else if(min_value<=30){
+       min_skip<-2;
+    }
+    
+    v<-0;
+    for(n in 1:length(scene_list)){
+       id_value<-scene_list[n];
+       lx<-0;
+       if(id_value <= lower_value){
+           lx<-min_value;
+           cat(format(s2[n,1],"%b%d"),"[",id_value,"]"," ");
+           lsstr<-paste(format(s2[n,1],"%b%d"),"[",id_value,"]");
+           if(min_value<=0.8){
+              min_skip<-min_skip+1*v;
+           }else if(min_value<=2){
+              min_skip<-min_skip+2*v;
+           }else if(min_value<=5){
+              min_skip<-min_skip+0.5*v;
+           }else if(min_value<=30){
+              min_skip<-min_skip+2;
+           }
+           text(lx-min_skip,m-1,lsstr);
+           v<-v+1;
+       }else if(id_value >= up_value){
+           lx<-max_value;
+           if(max_value<=2.5){
+              max_skip<-max_skip+0.8*v;
+           }else if(max_value<=8){
+              max_skip<-max_skip+4*v;
+           }else if(max_value<=14){
+              max_skip<-max_skip+2*v;
+           }else if(max_value<=40){
+              max_skip<-max_skip+8*v;
+           }
+           #cat(format(s2[n,1],"%b%d"),"[",id_value,"]"," ");
+           lsstr<-paste(format(s2[n,1],"%b%d"),"[",id_value,"]");
+           lx<-lx+max_skip;
+           if(lx>30){
+              text(min_value-max_skip,m-1,lsstr);
+           }else{
+              text(lx,m-1,lsstr);
+           }
+           v<-v+1;
+       }
+    }
+    cat("\n");
+  }
+}
+
+五数概括法
+http://baike.baidu.com/view/1547702.htm
+四分位数
+http://baike.baidu.com/view/999573.htm
+四分位数
+http://zh.wikipedia.org/wiki/%E5%9B%9B%E5%88%86%E4%BD%8D%E6%95%B0
+
+分析细节：
+对前一天一个月的数据，进行排序，取最小值，最大值，将分数据分成三个区间，分析昨天的数据在前一个月内的波动情况
+最小值、Q1、Q3、最大值，算一个区间值：区间=(Q3-Q1)*1.5 ,1.5为经验值，下界值= Q1-区间、上界值= Q3+区间
+如果下界值小于等于最小值，就取最小值，如果上界值大于等于最大值，就取最大值
+
+重要的部分是分位数的求取，列出如下三种方法:
+--oracle存储过程版本
+SELECT DISTINCT PERCENTILE_DISC(0.25) WITHIN GROUP(ORDER BY open_count / view_count) OVER() Q_1,
+                PERCENTILE_DISC(0.50) WITHIN GROUP(ORDER BY open_count / view_count) OVER() Q_2,
+                PERCENTILE_DISC(0.75) WITHIN GROUP(ORDER BY open_count / view_count) OVER() Q_3
+  from scene_effect a
+ where a.logdate between
+       add_months(to_date('2012-07-21', 'yyyy-MM-dd') - 1, -1) and
+       to_date('2012-07-21', 'yyyy-MM-dd') - 1
+   and a.scene_id = '1500072688f691927a1e' and view_count<>0;
+
+--R语言计算方法
+fivenum(data_list, na.rm = TRUE);
+
+--可以写一个程序版本，主要的核心是求四分位数(Q1、Q2、Q3、Q4)，注意奇偶情况下分位数的不同求取
+
+关于移动平均线
+http://www.yhqh.net/html/74-17/17557.htm
+目前我们场景的图表展示是以天为单位移动平滑的，这样的波动难以反映的数据走势，建议以周为单位取移动平均值，连成曲线图表
+  /**
+	 * 求取时间跨度,step为刻度值
+	 */
+	public static Date getIndexDate(long dateValue,int step) throws ParseException{
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(dateValue);
+		calendar.add(Calendar.DAY_OF_YEAR, step);
+		return calendar.getTime();
+	}
+	
+	/**
+	 * 求取31天内7天移动平均值
+	 * 0.141929641,0.14141183,0.140426088,0.141313392,0.141160216,0.142188974,0.143537032,0.144962548,0.14572424,0.145706059,0.145726191,0.145203852,0.145345478,0.145488517,0.146482757,0.14754326,0.144069332,0.144632118,0.146817843,0.146970939,0.147101128,0.146991648,0.148184261,0.150652049,0.151768461,0.152634035,0.153208754,0.153270667,0.152699689,0.152048129
+	 * 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30
+	 * @throws ParseException
+	 */
+	public static Map<Long,String> getAvg7DayList(Map<Long,Double> dataMap,Long day) throws ParseException {
+		Map<Long,String> avgMap = new LinkedHashMap<Long,String>();
+		if(dataMap != null && dataMap.size()>0){
+			for(int i=0;i<dataMap.size();i++){
+				Long currDay = Util.getIndexDate(day, -i).getTime();
+				double averageValue = 0;
+				if (dataMap.size()-i<7){
+					averageValue = dataMap.get(currDay);
+				}else{
+					double value = 0;
+					for(int j=0;j<7;j++){
+						value += dataMap.get(Util.getIndexDate(currDay,-j).getTime());
+					}
+					averageValue = value/7;
+				}
+				avgMap.put(currDay, String.valueOf(averageValue));
+			}
+		}else{
+			for(int i=0;i<31;i++){
+				Long currDay = Util.getIndexDate(day, -i).getTime();
+				avgMap.put(currDay, "0");
+			}
+		}
+		return avgMap;
+	}
+
+正态分布的前世今生
+http://www.itongji.cn/article/110Q3342012.html
+
+威尔科克森符号秩检验
+http://baike.baidu.com/view/4239167.htm
+
+使用Eclipse构建Maven的SpringMVC项目
+http://limingnihao.iteye.com/blog/830409
+
+网站logo中文名，备案
+外围门户注册
+内部逻辑结构整理
+律师咨询
+网站设计风格
+推广计划
+扩容
+
+网络流量查询
+http://alexa.chinaz.com/
+小说站
+http://baike.baidu.com/view/1980506.htm
+分析IP流量与网站排名的关系
+http://t.huangye88.com/post-6038-1-1.html
+建站经验分享
+http://www.im286.com/forum.php?mod=viewthread&tid=10540320
+建站经验分享：vps与空间有什么区别和优势在哪
+http://forum.home.news.cn/thread/97018679/1.html
+个人网站站长建站经验分享
+http://www.jz123.cn/text/041105.html
+什么是SEM? SEM是什么意思
+http://www.alixixi.com/zz/a/2010071963746.shtml
+建站经历谈网址导航站的品牌策略和商业价值
+http://bbs.cnzz.cn/forum.php?mod=viewthread&tid=865660
+
+maven javax.transaction:jta:jar:1.0.1B:compile
+http://blog.sina.com.cn/s/blog_56e2f4250100lyt4.html
+错误：java.lang.NoClassDefFoundError: org/objectweb/asm/CodeVisitor的解决方法
+http://blog.csdn.net/sqlnull/article/details/3397398
+maven去除相冲突的jar包
+http://blog.csdn.net/stone5751/article/details/6028286
+网站如何改善用户的阅读体验
+http://www.jzxue.com/Html/jiqiao/2007/9/45434J28.html
+百度亲身教你如何改进网站用户体验
+http://www.admin5.com/article/20121123/473737.shtml
+在线阅读技术推陈出新
+http://www.chinaxwcb.com/xwcbpaper/page/1/2009-07-10/05/74991247189943259.pdf
+腾讯微博开放平台
+http://wiki.open.t.qq.com/index.php
+新浪微博开放平台
+http://open.weibo.com/wiki/SDK#Java_SDK
+WampServer
+http://sourceforge.net/projects/wampserver/?source=dlp
+WAMP Server助你在Windows上快速搭建PHP集成环境
+http://www.iplaysoft.com/wamp-server.html
+You don't have permission to access /phpmyadmin/main.php on this server.
+http://zhidao.baidu.com/question/412422046.html
+Discuz! X2.5 最新下载 
+http://www.comsenz.com/downloads/install/discuzx#down_open
+
+http://localhost/upload/forum.php
+http://10.13.112.133/upload/forum.php
